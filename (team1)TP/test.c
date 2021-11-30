@@ -19,10 +19,6 @@ void DFS(Graph*, int vertex, int* visited);
 
 int main()
 {
-	printf("테스트");
-	printf("테스트");
-	printf("테스트");
-	printf("테스트");
 	FILE* fp;
 	fopen_s(&fp, "C:\\Users\\JIHO\\source\\repos\\-team1-TP\\(team1)TP\\input.txt", "r");
 	int buffer[MAX] = { 0, };
