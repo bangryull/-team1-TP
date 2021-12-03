@@ -43,14 +43,14 @@ int main()
 	}
 	// .txt파일 불러오기, endter는 -1로 구분하였으며 문장의 끝은 NULL로 표기함.
 
-	buffer[bufferindex] = NULL;
+	buffer[bufferindex] = -2;
 
 	fclose(fp);
 	
 	int buffersize = bufferindex;
 	int graphcount = 0;
 	for (int i = 0; i < buffersize; i++) {
-		if (buffer[i] == NULL) break;
+		if (buffer[i] < -1) break;
 
 		//그래프생성
 		int Msize = buffer[i];
@@ -138,9 +138,7 @@ void ViewGraph(Graph* graph)
 }
 void printBFS(Graph* graph, int startvertex) {
 	int* visited = (int*)malloc(sizeof(int) * graph->vn);
-	for (int i = 0; i < graph->vn; i++) {
-		visited[i] = 0;
-	}
+	memset(visited, 0, sizeof(int) * graph->vn);
 	int queue[MAX];
 	int front = 0, rear = 0, pop, i;
 
@@ -167,9 +165,7 @@ void printBFS(Graph* graph, int startvertex) {
 }
 void printDFS(Graph* graph, int startvertex) {
 	int* visited = (int*)malloc(sizeof(int) * graph->vn);
-	for (int i = 0; i < graph->vn; i++) {
-		visited[i] = 0;
-	}
+	memset(visited, 0, sizeof(int) * graph->vn);
 
 	DFS(graph, startvertex - 1, visited);
 	free(visited);
