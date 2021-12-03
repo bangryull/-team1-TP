@@ -31,7 +31,7 @@ int main()
 		return 0;
 	}
 	while (fgets(str, sizeof(str), fp) != NULL) {
-		str[strlen(str) - 1] = '\0';
+	
 		char* ptr = strtok(str, " ");
 		while (ptr != NULL) {
 			buffer[bufferindex] = atoi(ptr);
@@ -46,7 +46,7 @@ int main()
 	buffer[bufferindex] = NULL;
 
 	fclose(fp);
-
+	
 	int buffersize = bufferindex;
 	int graphcount = 0;
 	for (int i = 0; i < buffersize; i++) {
