@@ -205,7 +205,7 @@ void DeleteGraph(Graph* graph)
 {
 	int i = 0;
 
-	for (i = 0; i < graph->vn; i++)/
+	for (i = 0; i < graph->vn; i++)
 	{
 		free(graph->matrix[i]);// row 메모리 해제
 	}
@@ -215,7 +215,7 @@ void DeleteGraph(Graph* graph)
 
 void AddEdge(Graph* graph, int startvertex, int endvertex ,int weight)
 {
-	graph->matrix[start - 1][end - 1] = weight; //간선설정 txt의 vertex는 1부터 시작하지만 배열은 0부터시작하기때문에 -1을 하였음.
+	graph->matrix[startvertex - 1][endvertex - 1] = weight; //간선설정 txt의 vertex는 1부터 시작하지만 배열은 0부터시작하기때문에 -1을 하였음.
 }
 
 void ViewGraph(Graph* graph)
@@ -254,15 +254,15 @@ void printBFS(Graph* graph, int startvertex) {
 	printf("%d ", startvertex);
 
 	queue[0] = startvertex;
-	rear++;												//rear = queue의 제일끝, front는 queue배열의 앞의 값.
+	rear++;												
 	visited[startvertex - 1] = 1;
 
-	while (front < rear)
+	while (front < rear)								//queue의 front값이 rear값을 추월할때 까지 반복
 	{
 		pop = queue[front];
 		front++;
 		for (i = 0; i < graph->vn; i++) {
-			if (graph->matrix[pop - 1][i] == 1 && visited[i] == 0) {
+			if (graph->matrix[pop - 1][i] == 1 && visited[i] == 0) { 
 				printf("%d ", i + 1);
 				queue[rear] = i + 1;
 				rear++;
@@ -274,8 +274,8 @@ void printBFS(Graph* graph, int startvertex) {
 }
 
 void printDFS(Graph* graph, int startvertex) {
-	int* visited = (int*)malloc(sizeof(int) * graph->vn);
-	memset(visited, 0, sizeof(int) * graph->vn);
+	int* visited = (int*)malloc(sizeof(int) * graph->vn); //DFS가 확인할 visited 배열 생성
+	memset(visited, 0, sizeof(int) * graph->vn);		  //visited 배열 0으로 초기화
 
 	DFS(graph, startvertex - 1, visited);
 	free(visited);
@@ -283,47 +283,48 @@ void printDFS(Graph* graph, int startvertex) {
 }
 
 void DFS(Graph* graph, int vertex, int* visited) {
-	visited[vertex] = 1;
-	printf("%d ", vertex + 1);
+	visited[vertex] = 1;							//방문표시
+	printf("%d ", vertex + 1);						//방문vertex 출력
 	for (int i = 0; i <= graph->vn; i++) {
-		if (graph->matrix[vertex][i] == 1 && visited[i] == 0) {
+		if (graph->matrix[vertex][i] == 1 && visited[i] == 0) {	// 재귀적으로 탐색
 			DFS(graph, i, visited);
 		}
 	}
 }
 
 void Dijstra(Graph* graph, int startvertex) {
-	int* dist = (int*)malloc(sizeof(int) * graph->vn);
-	int* index = (int*)malloc(sizeof(int) * graph->vn);
-	int* select = (int*)malloc(sizeof(int) * graph->vn);
-	int min, p;
+	int* dist = (int*)malloc(sizeof(int) * graph->vn);			//거리를 저장하는 배열공간 생성
+	int* index = (int*)malloc(sizeof(int) * graph->vn);			//부모index를 저장하는 배열공간 생성
+	int* select = (int*)malloc(sizeof(int) * graph->vn);		//최단거리가 고정된 vertex를 표시하는 배열생성
+	int min, pos;
 
-	memset(index, 0, sizeof(int) * graph->vn);
+	memset(index, 0, sizeof(int) * graph->vn);					//배열 초기화
 	memset(select, 0, sizeof(int) * graph->vn);
 
-	p = startvertex - 1;
-	select[p] = 1;
+	pos = startvertex - 1;										//startvertex부터 시작
+	select[pos] = 1;											
 
-	for (int i = 0; i < graph->vn; i++) {
-		dist[i] = graph->matrix[p][i];
+	for (int i = 0; i < graph->vn; i++) {						//startvertex기준으로 모든 vertex에 대한 거리갱신
+		dist[i] = graph->matrix[pos][i];
 	}
 
-	// dist갱신 목적
-	for (int i = 0; i < graph->vn - 1; i++) {
-		// select next vertex (min 값을 가진 index )
+
+	for (int i = 0; i < graph->vn -1; i++) {					//dist의 갱신이 최대vertex숫자 -1 만큼 이루어짐 
+		
 		min = MAX;
-		for (int j = 0; j < graph->vn; j++) {
+		
+		for (int j = 0; j < graph->vn; j++) {					//다음 vetex 선택 (선택되지 않은 vertex중에서 가장 작은 dist를 가진 vertex )
 			if (!select[j] && min > dist[j]) {
 				min = dist[j];
-				p = j;
+				pos = j;
 			}
 		}
-		select[p] = 1;
-		// dist 갱신
+		select[pos] = 1;										//선택된 vertex의 select 갱신
+		
 		for (int j = 0; j < graph->vn; j++) {
-			if (dist[j] > dist[p] + graph->matrix[p][j] && !select[j]) {
-				dist[j] = dist[p] + graph->matrix[p][j];
-				index[j] = p;
+			if (dist[j] > dist[pos] + graph->matrix[pos][j] && !select[j]) {  // dist 갱신 ( select 되지 않고 거리가 더 짧으면 기존 dist 초기화)
+				dist[j] = dist[pos] + graph->matrix[pos][j];
+				index[j] = pos;												  // 부모 index를 저장
 			}
 		}
 
@@ -335,27 +336,27 @@ void Dijstra(Graph* graph, int startvertex) {
 
 	for (int i = 0; i < graph->vn; i++) {
 		if (i != startvertex - 1) {
-			printf("정점 [%d] :", i + 1);
-			p = i;
-			int flag = 1;
-			int* temp = (int*)malloc(sizeof(int) * graph->vn);
-			int count = 0;
+			printf("정점 [%d] :", i + 1);							// 경로는 부모 index를 따라가기 때문에 출력이 역순으로 출력됨
+			pos = i;												// 따라서 출력들을 배열에 담아 다시 역순으로 출력하여 제대로된 순서를 출력하는 코드.
+			int flag = 1;											// while문 탈출 변수
+			int* temp = (int*)malloc(sizeof(int) * graph->vn);		// 부모 index들의 저장공간
+			int count = 0;											// 배열의 index변수
 			while (flag) {
-				if (index[p] == 0) {
-					temp[count] = 1;
+				if (index[pos] == startvertex-1) {					// startvertex의 부모는 없으므로 while문종료 flag 갱신
+					temp[count] = startvertex;
 					flag = 0;
 				}
-				else {
-					temp[count] = index[p] + 1;
-					p = index[p];
+				else {												//count index를 늘려가며 경로저장
+					temp[count] = index[pos] + 1;
+					pos = index[pos];
 				}
 				count++;
 			}
-			for (int j = count - 1; j >= 0; j--) {
+			for (int j = count - 1; j >= 0; j--) {					//경로를 역순으로 출력
 				printf("%d - ", temp[j]);
 			}
 			printf("%d" ,i + 1);
-			printf("   길이 : %d", dist[i]);
+			printf("   길이 : %d", dist[i]);						//갱신된 dist배열출력
 			printf("\n");
 			free(temp);
 
