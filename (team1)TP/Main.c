@@ -339,7 +339,7 @@ void Dijstra(Graph* graph, int startvertex) {
 			printf("정점 [%d] :", i + 1);							// 경로는 부모 index를 따라가기 때문에 출력이 역순으로 출력됨
 			pos = i;												// 따라서 출력들을 배열에 담아 다시 역순으로 출력하여 제대로된 순서를 출력하는 코드.
 			int flag = 1;											// while문 탈출 변수
-			int* temp = (int*)malloc(sizeof(int) * graph->vn);		// 부모 index들의 저장공간
+			int* temp = (int*)malloc(sizeof(int) * graph->vn);		// 각 vertex들의 부모 index 저장공간
 			int count = 0;											// 배열의 index변수
 			while (flag) {
 				if (index[pos] == startvertex-1) {					// startvertex의 부모는 없으므로 while문종료 flag 갱신
