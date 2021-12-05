@@ -9,6 +9,8 @@ typedef struct {
 	int** matrix; //인접 행렬
 } Graph;
 
+
+
 Graph* NewGraph(int max_vertex);//그래프 동적 생성
 void DeleteGraph(Graph* graph);//그래프 제거
 void AddEdge(Graph* graph, int start, int goal);//edge 추가
@@ -19,8 +21,8 @@ void DFS(Graph*, int vertex, int* visited);
 
 int main()
 {
-	FILE* fp;
-	fopen_s(&fp, "C:\input.txt", "r");
+	printf("\n과제1: 그래프 탐방 알고리즘\n\n");
+	FILE* fp = fopen("input.txt", "r");
 	int buffer[MAX] = { 0, };
 	char str[MAX];
 	int bufferindex = 0;
@@ -43,13 +45,13 @@ int main()
 	}
 	// .txt파일 불러오기, endter는 -1로 구분하였으며 문장의 끝은 NULL로 표기함.
 
-	buffer[bufferindex] = -2;
+	buffer[bufferindex] = -2; //파일 마지막 표시
 
 	fclose(fp);
 	
 	int buffersize = bufferindex;
 	int graphcount = 0;
-	for (int i = 0; i < buffersize; i++) {
+	for (int i = 0; i < buffersize; i++) { //i는 버퍼안의 숫자를 읽을 때 마다 올라감
 		if (buffer[i] < -1) break;
 
 		//그래프생성
@@ -73,12 +75,12 @@ int main()
 		ViewGraph(graph);
 		printf("-----------------------------------\n");
 		// print DFS
-		printf("DFS\n");
+		printf("DFS(깊이 우선 탐색)\n");
 		printDFS(graph, 1);
 		printf("\n");
 
 		// print BFS
-		printf("BFS\n");
+		printf("BFS(넓이 우선 탐색)\n");
 		printBFS(graph, 1);
 		printf("\n");
 
@@ -89,8 +91,80 @@ int main()
 
 	}
 
+	printf("과제2: 최단 거리 구하기 알고리즘\n\n");
+	FILE* fp2 = fopen("input2.txt", "r");
+	int buffer2[MAX] = { 0, };
+	char str2[MAX];
+	int bufferindex2 = 0;
 
-	return 0;
+	if (fp2 == NULL)
+	{
+		perror("direction error");
+		return 0;
+	}
+	while (fgets(str2, sizeof(str2), fp2) != NULL) {
+
+		char* ptr2 = strtok(str2, " ");
+		while (ptr2 != NULL) {
+			buffer2[bufferindex2] = atoi(ptr2);
+			ptr2 = strtok(NULL, " ");
+			bufferindex2++;
+		}
+		buffer2[bufferindex2] = -1;
+		bufferindex2++;
+	}
+
+	buffer2[bufferindex2] = -2;
+
+	fclose(fp2);
+
+	buffersize = bufferindex2;
+	graphcount = 0;
+	for (int i = 0; i < buffersize; i++)
+	{
+		if (buffer2[i] < -1) break;
+
+		int Msize = buffer2[i];
+		int** arr; // 2차원배열 생성
+		arr = (int**)malloc(sizeof(int*) * Msize);
+		for (int i = 0; i < Msize; i++) {
+			arr[i] = (int*)malloc(sizeof(int) * Msize);
+		}
+		for (int j = 0; j < Msize; j++) {
+			for (int k = 0; k < Msize; k++) {
+				arr[k][j] = 0;
+			}
+		}
+		i++;
+		for (int j = 0; j < Msize; j++) {
+			i++;
+			int startvertex = buffer2[i]-1;
+			i++;
+			while (buffer2[i] > 0) {
+				int endvertex = buffer2[i]-1;
+				i++;
+				int distance = buffer2[i];
+				arr[startvertex][endvertex] = distance;
+				i++;
+			}
+		}
+		graphcount++;
+		printf("그래프 [ %d ] \n", graphcount);
+		printf("-----------------------------------\n");
+		//행렬 표시
+		for (int j = 0; j < Msize; j++) {
+			for (int k = 0; k < Msize; k++) {
+				printf("%3d ", arr[j][k]);
+			}
+			printf("\n");
+		}
+		printf("-----------------------------------\n");
+
+		for (int i = 0; i < Msize; i++) { // 2차원배열 해제
+			free(arr[i]);
+		}
+		free(arr);
+	}
 }
 
 
@@ -108,6 +182,7 @@ Graph* NewGraph(int max_vertex)
 	}
 	return graph;
 }
+
 void DeleteGraph(Graph* graph)
 {
 	int i = 0;
@@ -119,10 +194,12 @@ void DeleteGraph(Graph* graph)
 	free(graph->matrix);//매트릭스 메모리 해제
 	free(graph);//그래프 메모리 해제
 }
+
 void AddEdge(Graph* graph, int start, int goal)
 {
 	graph->matrix[start - 1][goal - 1] = 1;//간선설정
 }
+
 void ViewGraph(Graph* graph)
 {
 	int i = 0;
@@ -136,6 +213,7 @@ void ViewGraph(Graph* graph)
 		printf("\n");
 	}
 }
+
 void printBFS(Graph* graph, int startvertex) {
 	int* visited = (int*)malloc(sizeof(int) * graph->vn);
 	memset(visited, 0, sizeof(int) * graph->vn);
@@ -163,6 +241,7 @@ void printBFS(Graph* graph, int startvertex) {
 	}
 	free(visited);
 }
+
 void printDFS(Graph* graph, int startvertex) {
 	int* visited = (int*)malloc(sizeof(int) * graph->vn);
 	memset(visited, 0, sizeof(int) * graph->vn);
@@ -171,6 +250,7 @@ void printDFS(Graph* graph, int startvertex) {
 	free(visited);
 
 }
+
 void DFS(Graph* graph, int vertex, int* visited) {
 	visited[vertex] = 1;
 	printf("%d ", vertex + 1);
