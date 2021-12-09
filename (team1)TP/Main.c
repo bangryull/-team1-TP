@@ -9,8 +9,6 @@ typedef struct {
 	int** matrix; //인접 행렬
 } Graph;
 
-
-
 Graph* NewGraph0(int max_vertex);//0으로 초기화된 그래프 생성
 Graph* NewGraphMax(int max_vertex);//MAX로 초기화된 그래프 생성
 
@@ -59,9 +57,10 @@ int main()
 	for (int i = 0; i < buffersize; i++) { //i는 버퍼안의 숫자를 읽을 때 마다 올라감
 		if (buffer[i] < -1) break;
 
-		//그래프생성 Msize 는 그래프의 크기
+		
 		int Msize = buffer[i];
 		i++;
+		//Msize크기 만큼의 0으로 초기화된 그래프 생성
 		Graph* graph = NewGraph0(Msize);
 		for (int j = 0; j < Msize; j++) {
 			i++;
@@ -124,23 +123,24 @@ int main()
 		buffer2[bufferindex2] = -1;
 		bufferindex2++;
 	}
+	// .txt파일 불러오기, enter는 -1로 구분
 
-	buffer2[bufferindex2] = -2;
+	buffer2[bufferindex2] = -2; //파일 마지막 표시
 
 	fclose(fp2);
 
 	buffersize = bufferindex2;
 	graphcount = 0;
 
-	for (int i = 0; i < buffersize; i++)
+	for (int i = 0; i < buffersize; i++)  //i는 버퍼안의 숫자를 읽을 때 마다 올라감
 	{
 		if (buffer2[i] < -1) break;
-		
+		//
 		int Msize = buffer2[i];
-		Graph* graph = NewGraphMax(Msize);
-		
-		
 		i++;
+		//Msize크기 만큼의 MAX로 초기화된 그래프 생성
+		Graph* graph = NewGraphMax(Msize);
+
 		for (int j = 0; j < Msize; j++) {
 			i++;
 			int startvertex = buffer2[i];
@@ -313,7 +313,7 @@ void Dijstra(Graph* graph, int startvertex) {
 		
 		min = MAX;
 		
-		for (int j = 0; j < graph->vn; j++) {					//다음 vetex 선택 (선택되지 않은 vertex중에서 가장 작은 dist를 가진 vertex )
+		for (int j = 0; j < graph->vn; j++) {					//다음 vertex 선택 (선택되지 않은 vertex중에서 가장 작은 dist를 가진 vertex )
 			if (!select[j] && min > dist[j]) {
 				min = dist[j];
 				pos = j;
@@ -346,17 +346,17 @@ void Dijstra(Graph* graph, int startvertex) {
 					temp[count] = startvertex;
 					flag = 0;
 				}
-				else {												//count index를 늘려가며 경로저장
+				else {												// count index를 늘려가며 경로저장
 					temp[count] = index[pos] + 1;
 					pos = index[pos];
 				}
 				count++;
 			}
-			for (int j = count - 1; j >= 0; j--) {					//경로를 역순으로 출력
+			for (int j = count - 1; j >= 0; j--) {					// 역순으로된 경로를 정방향으로 출력
 				printf("%d - ", temp[j]);
 			}
-			printf("%d" ,i + 1);
-			printf("   길이 : %d", dist[i]);						//갱신된 dist배열출력
+			printf("%d" ,i + 1);									// end vertex
+			printf("   길이 : %d", dist[i]);						// 갱신된 dist배열출력
 			printf("\n");
 			free(temp);
 
